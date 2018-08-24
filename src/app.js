@@ -3,10 +3,16 @@ import { render } from 'react-dom'
 import { TaskList } from './task-list'
 import { NewItem } from './new-task'
 import { createItem } from './item'
+import { apiClient } from './api-client'
 
 class App extends React.Component {
   state = {
-    items: []
+    items: [],
+    loading: true
+  }
+
+  componentDidMount() {
+    apiClient.getAllItems().then(items => this.setState({ items, loading: false }))
   }
 
   onCompleatChange = (id, completed) => {
@@ -26,6 +32,9 @@ class App extends React.Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return <h1>Loading...</h1>
+    }
     return (
       <Fragment>
         <TaskList items={this.state.items} onCompleatChange={this.onCompleatChange} />
