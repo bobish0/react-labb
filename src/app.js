@@ -20,7 +20,9 @@ class App extends React.Component {
   onCompleatChange = (id, completed) => {
     const newItemList = this.state.items.map(item => {
       if (item.id === id) {
-        return createItem(item.name, id, completed);
+        const newItem = createItem(item.name, id, completed);
+        apiClient.updateItem(newItem);
+        return newItem;
       }
       return item;
     });
@@ -28,9 +30,11 @@ class App extends React.Component {
   };
 
   onCreate = itemName => {
+    const newItem = createItem(itemName);
     this.setState({
-      items: [...this.state.items, createItem(itemName)]
+      items: [...this.state.items, newItem]
     });
+    apiClient.createItem(newItem);
   };
 
   render() {
