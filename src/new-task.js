@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 export class NewItem extends Component {
   state = {
     itemName: ''
-  }
+  };
 
   onChange = event => {
-    this.setState({ itemName: event.target.value })
-  }
+    this.setState({ itemName: event.target.value });
+  };
 
   onSubmit = event => {
-    event.preventDefault()
-    this.props.onCreate(this.state.itemName)
-    this.setState({ itemName: '' })
-  }
+    event.preventDefault();
+    this.props.onCreate(this.state.itemName);
+    this.setState({ itemName: '' });
+  };
 
   render() {
     return (
@@ -21,6 +21,6 @@ export class NewItem extends Component {
         <input value={this.state.itemName} onChange={this.onChange} />
         <button>Save</button>
       </form>
-    )
+    );
   }
 }

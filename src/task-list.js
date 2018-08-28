@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export const TaskList = ({ items, onCompleatChange }) => (
   <ul>
@@ -13,4 +13,4 @@ export const TaskList = ({ items, onCompleatChange }) => (
       </li>
     ))}
   </ul>
-)
+);
