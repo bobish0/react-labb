@@ -1,1 +1,6 @@
-export { changeCompleatTask, createTask } from './tasks';
+export {
+  changeCompleatTask,
+  createTask,
+  getAllTasks,
+  setLoadingState
+} from './tasks';

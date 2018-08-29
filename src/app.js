@@ -3,26 +3,27 @@ import { connect } from 'react-redux';
 import { TaskList } from './task-list';
 import { NewItem } from './new-task';
 // import { apiClient } from './api-client';
-import { createTask, changeCompleatTask } from './actions';
+import { createTask, changeCompleatTask, getAllTasks } from './actions';
 
 class AppComponent extends React.Component {
-  // componentDidMount() {
-  //   apiClient
-  //     .getAllItems()
-  //     .then(items => this.setState({ items, loading: false }));
-  // }
+  componentDidMount() {
+    this.props.getAllTasks();
+    // apiClient
+    //   .getAllItems()
+    //   .then(items => this.setState({ items, loading: false }));
+  }
 
-  onCompleatChange = (id, completed) => {
+  onCompleatChange = (item, isComplete) => {
     // const newItemList = this.state.items.map(item => {
     //   if (item.id === id) {
-    //     const newItem = createItem(item.name, id, completed);
+    //     const newItem = createItem(item.name, id, isComplete);
     //     apiClient.updateItem(newItem);
     //     return newItem;
     //   }
     //   return item;
     // });
     // this.setState({ items: newItemList });
-    this.props.changeCompleatTask(id, completed);
+    this.props.changeCompleatTask(item, isComplete);
   };
 
   onCreate = itemName => {
@@ -35,7 +36,7 @@ class AppComponent extends React.Component {
   };
 
   render() {
-    if (this.props.tasks.loading) {
+    if (this.props.tasks.loading || !this.props.tasks) {
       return <h1>Loading...</h1>;
     }
     return (
@@ -55,9 +56,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  getAllTasks: () => dispatch(getAllTasks()),
   createTask: itemName => dispatch(createTask(itemName)),
-  changeCompleatTask: (id, completed) =>
-    dispatch(changeCompleatTask(id, completed))
+  changeCompleatTask: (item, isComplete) =>
+    dispatch(changeCompleatTask(item, isComplete))
 });
 
 export const App = connect(

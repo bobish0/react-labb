@@ -1,26 +1,41 @@
+const BASE_URL = 'http://localhost:5000/api/todo';
+
 export const apiClient = {
   getAllItems() {
     console.log('Fetching all todos item');
-    return new Promise(r => {
-      setTimeout(r, 1000, [
-        { name: 'Köp en katt', completed: true, id: 1 },
-        { name: 'Köp en hund', completed: false, id: 2 }
-      ]);
-    });
+    return fetch(BASE_URL).then(result => result.json());
   },
 
   createItem(item) {
     console.log('Create a new item');
-    return Promise.resolve(true);
+    return fetch(BASE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(item)
+    }).then(result => result.json());
   },
 
   removeItem(item) {
     console.log('Removing item');
-    return Promise.resolve(true);
+    return fetch(`${BASE_URL}/${item.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(item)
+    });
   },
 
   updateItem(item) {
     console.log('Updating item');
-    return Promise.resolve(true);
+    return fetch(`${BASE_URL}/${item.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(item)
+    });
   }
 };

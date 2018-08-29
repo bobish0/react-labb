@@ -309,7 +309,106 @@ const store = createStore(
 
 Men vad händer! Dina ändringar spars inte längre på backend. Detta kan enkelt fixas genom att lägga till ett så kallat middleware till redux som "tjuvlyssnar" på dina actions och kan utföra sido effekter (dvs. en händelse som behöver läsa eller skriva till omvärden, ex. en backend server).
 
+I detta fall kommer vi använda av en så kallad `thunk`. Vad detta möjliggör är att vi kan dispatcha en funktion istället för en action. 
 
+Nu kanske du tänker "va?". I så fall vill jag försöka förtydliga det hela. Hittills har vi dispatchat en action. Exempelvis:
+
+```js
+export const createTask = itemName => ({
+  type: 'CREATE_TASK',
+  item: {
+    id: Math.random(),
+    name: itemName,
+    isComplete: false
+  }
+});
+
+const itemName = 'My new task';
+
+dispatch(createTask(itemName))
+```
+
+Koden ovan är ju mer eller mindre samma sak som:
+
+```js
+dispatch({
+  type: 'CREATE_TASK',
+  item: {
+    id: Math.random(),
+    name: 'My new task',
+    isComplete: false
+  }
+})
+```
+
+Vad `thunk` möjliggör att vi kan ge en funktion till dispatch som sedan exekveras. Ex:
+
+```js
+export const getAllTasks = () => dispatch => {
+  dispatch(setLoadingState(true));
+  return api.getAllItems().then(items => {
+    dispatch({
+      type: 'RESET_ITEMS',
+      items
+    });
+    dispatch(setLoadingState(false));
+  });
+};
+
+dispatch(getAllTasks())
+```
+
+På det här viset har vi möjlighet att uföra flera actions i en action. Som i fallet ovan utförs det totalt tre stycken actions (dispatch anropas tre gånger) i functionen `getAllTasks`. Detta gör alltså att vi kan utföra asynkrona anrop. 
+
+Låt oss skriva om `createTask` och `changeCompleatTask` i `actions/tasks.js` till:
+
+```js
+export const createTask = itemName => (dispatch, getState, api) => {
+  return api.createItem(createItem(itemName)).then(item =>
+    dispatch({
+      type: 'CREATE_TASK',
+      item
+    })
+  );
+};
+
+export const changeCompleatTask = (item, isComplete) => (
+  dispatch,
+  getState,
+  api
+) => {
+  return api.updateItem({ ...item, isComplete }).then(() =>
+    dispatch({
+      type: 'CHANGE_COMPLEAT_TASK',
+      id: item.id,
+      isComplete
+    })
+  );
+};
+```
+
+Härligt! Vi kan nu lägga till och ändra ett item men.. vi kan inte ladda in alla items?! Låt oss skapa en ny action som gör just detta åt oss:
+
+```js
+export const getAllTasks = () => (dispatch, getState, api) => {
+  dispatch(setLoadingState(true));
+  return api.getAllItems().then(items => {
+    dispatch({
+      type: 'RESET_ITEMS',
+      items
+    });
+    dispatch(setLoadingState(false));
+  });
+};
+```
+
+Och anropa sedan denna i vid `componentDidMount` i `AppComponent`:
+
+```js
+componentDidMount() {
+  this.props.getAllTasks();
+}
+```
 
 #### Step 9:
 

@@ -1,5 +1,21 @@
 import { createItem } from '../item';
 
+export const setLoadingState = isLoading => ({
+  type: 'SET_LOADING_STATE',
+  isLoading
+});
+
+export const getAllTasks = () => (dispatch, getState, api) => {
+  dispatch(setLoadingState(true));
+  return api.getAllItems().then(items => {
+    dispatch({
+      type: 'RESET_ITEMS',
+      items
+    });
+    dispatch(setLoadingState(false));
+  });
+};
+
 export const createTask = itemName => (dispatch, getState, api) => {
   return api.createItem(createItem(itemName)).then(item =>
     dispatch({
@@ -9,16 +25,16 @@ export const createTask = itemName => (dispatch, getState, api) => {
   );
 };
 
-export const changeCompleatTask = (id, completed) => (
+export const changeCompleatTask = (item, isComplete) => (
   dispatch,
   getState,
   api
 ) => {
-  return api.updateItem({ id, completed }).then(() =>
+  return api.updateItem({ ...item, isComplete }).then(() =>
     dispatch({
       type: 'CHANGE_COMPLEAT_TASK',
-      id,
-      completed
+      id: item.id,
+      isComplete
     })
   );
 };

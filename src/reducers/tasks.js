@@ -7,6 +7,16 @@ const initState = {
 
 export const tasks = (state = initState, action) => {
   switch (action.type) {
+    case 'SET_LOADING_STATE':
+      return {
+        ...state,
+        loading: action.isLoading
+      };
+    case 'RESET_ITEMS':
+      return {
+        ...state,
+        items: action.items
+      };
     case 'CREATE_TASK':
       return {
         ...state,
@@ -17,7 +27,7 @@ export const tasks = (state = initState, action) => {
         ...state,
         items: state.items.map(item => {
           if (item.id === action.id) {
-            return createItem(item.name, action.id, action.completed);
+            return createItem(item.name, action.id, action.isComplete);
           }
           return item;
         })

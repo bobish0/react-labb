@@ -6,8 +6,8 @@ export const TaskList = ({ items, onCompleatChange }) => (
       <li key={item.id}>
         <input
           type="checkbox"
-          checked={item.completed}
-          onChange={event => onCompleatChange(item.id, event.target.checked)}
+          checked={item.isComplete}
+          onChange={event => onCompleatChange(item, event.target.checked)}
         />
         {item.name}
       </li>
