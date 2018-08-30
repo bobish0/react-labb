@@ -655,7 +655,10 @@ export const TaskList = observer(({ items }) => (
 ));
 ```
 
-
 #### Step 11:
+
+Uppdatera `new-task.js` så att den använder mobx istället för `setState`.
+
+#### Step 12:
 
 Seriöst? Har du hunnit hit på labbtiden? I så fall tycker jag att du kan hjälpa någon som inte har kommit lika långt 😊
