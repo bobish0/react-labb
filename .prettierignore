@@ -1,2 +1,4 @@
 *.md
 *.json
+src/store/task.js
+src/store/tasks.js
