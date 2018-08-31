@@ -65,7 +65,7 @@ Sedan får du ett ett event varje gång användaren klickar i checkboxen genom a
 
 Och som av en slup så behöver funktionen `onCompleatChange` ett item och huruvida todo:n är klar eller inte.
 
-#### Step 6:
+#### Step 7:
 
 Nu är det dags att knyta samman allt med ditt api 🚀
 
@@ -96,7 +96,7 @@ onCompleatChange = async (itemToChange, isComplete) => {
 };
 ```
 
-#### Step 7:
+#### Step 8:
 
 Nice! Allt fungerar! 🌈
 
@@ -319,7 +319,7 @@ export const App = connect(
 )(AppComponent);
 ```
 
-#### Step 8:
+#### Step 9:
 
 Lägg till redux dev tools. Installera https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd i chrome och lägg till följande argument `window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()` till `createStore` i `index.js`
 
@@ -332,7 +332,7 @@ const store = createStore(
 
 Öppna devtools och se hur to kan färdas genom tid och rum med redux dev tools.
 
-#### Step 9:
+#### Step 10:
 
 Men vad händer! Dina ändringar sparas inte längre på backend. Detta kan enkelt fixas genom att lägga till ett så kallat middleware till redux som "tjuvlyssnar" på dina actions och kan utföra sido effekter (dvs. en händelse som behöver läsa eller skriva till omvärlden, ex. en backend server).
 
@@ -463,13 +463,13 @@ componentDidMount() {
 }
 ```
 
-#### Step 10:
+#### Step 11:
 
 Andas ut och tänk efter. Var detta bra? Dåligt?
 
 Commita allt som du har gjort och gå vidare i ditt liv.
 
-#### Step 11:
+#### Step 12:
 
 Låt oss nu kolla på mobx. Checka ut branchen som du skapa tidigare genom `git checkout mobx`.
 
@@ -714,10 +714,10 @@ export const TaskList = observer(({ items }) => (
 ));
 ```
 
-#### Step 12:
+#### Step 13:
 
 Uppdatera `new-task.js` så att den använder mobx istället för `setState`.
 
-#### Step 13:
+#### Step 14:
 
 Seriöst? Har du hunnit hit på labbtiden? I så fall tycker jag att du kan hjälpa någon som inte har kommit lika långt 😊
