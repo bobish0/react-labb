@@ -25,13 +25,13 @@ $ npm start
 
 Du borde nu se ett inputfält, en knapp och lite text. Nice! 🙌
 
-Skriv något vackert i inputfältet. Märker du att något är fel? Det händer inget när du skriver? Varför? Om du öppnar dev-tools i den webbläsare så ser du dock att vi loggar det du skrivet. Så vad händer egentligen?
+Skriv något vackert i inputfältet. Märker du att något är fel? Det händer inget när du skriver? Varför? Om du öppnar dev-tools i din webbläsare så ser du dock att vi loggar det du skrivet. Så vad händer egentligen?
 
 Öppna upp filen `new-task.js` och se om du kan fixa problemet. 
 
 Ledtråd:
 
-Om du tittar på template:en för inputfältet så ser den ut så här: `<input value={this.state.itemName} onChange={this.onChange} />`. Dvs. värdet som ska vara i input fältet kommer från vårt interna state (`this.state.itemName`) och så fort vi skriver något i fältet kommer `onChange` att anropas med ett event och i eventet finns den text som användaren har skrivit in men vi uppdaterar inte vårat state. Utan vi låter det gamla värdet vara kvar i statet. Så uppdatera statet så kommer det nog gå bra 🕺 (`this.setState({ itemName: denNyaSträngen });`)
+Om du tittar på template:en för inputfältet så ser den ut så här: `<input value={this.state.itemName} onChange={this.onChange} />`. Dvs. värdet som ska vara i input fältet kommer från vårt interna state (`this.state.itemName`) och så fort vi skriver något i fältet kommer `onChange` att anropas med ett event och i eventet finns den text som användaren har skrivit in men vi uppdaterar inte vårat state. Utan vi låter det gamla värdet vara kvar i statet. Så uppdatera statet så kommer det nog gå bra 🕺 
 
 #### Step 3:
 
@@ -39,11 +39,9 @@ Tasken listas inte på sidan 😢 Fixa problemet!
 
 Ledtråd: I `task-list.js` skrivs bara en tom lista ut. Så ska det ju inte vara. Se till att komponenten får listan av items som props. Se även till att skriva ut namnet på elementet, istället för hela elementet.  
 
-Om du får ett felmeddelande i devtools som säger något om att varje element behöver ett unikt id så kan du enkelt fixa det genom att lägga till `key={item.id}` på det yttre html-element som skapas för varje item. 
-
 #### Step 4:
 
-Nice, så vi kan nu se alla alla todo-items 🎉 Vi kan dock fortfarande inte skapa nya? Det händer som inget när man klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`). 
+Nice, så vi kan nu se alla todo-items 🎉 Vi kan dock fortfarande inte skapa nya? Det händer som inget när man klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `render` i `app.js` och i `onSubmit` i `new-task.js`). 
 
 #### Step 5:
 
@@ -53,7 +51,7 @@ Se även till att töm input fältet när man har skapat ett item.
 
 Så där, nu kan man skapa nya todos och vi kan se alla i listan men vi kan inte markera dom som klara 😕
 
-Din uppgift blir nu att lägga till en checkbox i `task-list.js` som gör att man kan markera en doto som klar.
+Din uppgift blir nu att lägga till en checkbox i `task-list.js` som gör att man kan markera en todo som klar.
 
 Ledtråd: Du kan skapa upp en checkbox genom följande html kod:
 
@@ -61,19 +59,42 @@ Ledtråd: Du kan skapa upp en checkbox genom följande html kod:
 <input type="checkbox" />
 ```
 
-Du kan sedan säga om den ska vara ifylld eller inte genom att ge den följande attrebut: `checked={item.completed}`.
+Du kan sedan säga om den ska vara ifylld eller inte genom att ge den följande attribut: `checked={item.isComplete}`.
 
-Sedan får du ett ett event varje gång användaren klickar i checkboxen genom att tilldela följande attrebut:
+Sedan får du ett ett event varje gång användaren klickar i checkboxen genom att tilldela följande attribut: `onChange={event => console.log('Update item: ' + item + '. Complete: event.target.checked')`
 
-`onChange={event => console.log('Update item: ' + item.id + '. Complete: event.target.checked')`
-
-Och som av en slup så behöver funktionen `onCompleatChange` ett id och hurvida todon är klar eller inte.
+Och som av en slup så behöver funktionen `onCompleatChange` ett item och huruvida todo:n är klar eller inte.
 
 #### Step 6:
 
 Nu är det dags att knyta samman allt med ditt api 🚀
 
-I sann tv-koks anda har jag förberett en api klient för dig. Så allt du behöver göra är att lägga till att `createItem` och `updateItem` kallas på i `onCompleatChange` och `onCreate` i `app.js`
+I sann tv kocks anda har jag förberett en api klient för dig. 
+
+Eftersom det är backend som bestämmer id:t så behöver vi göra anropet till backen innan vi kan stoppa in den i vårat egna state.
+
+Uppdatera `app.js` så att vi anropar backend.
+
+Ledtråd:
+
+Låt oss börja med `onCreate`. `apiClient.createItem` förväntar sig ett nytt item och funktionen kommer sedan returnera ett Promises object och i svaret till detta Promises har vi det nya objektet som backend ger tillbaka om allt har gått bra. Ex.
+
+```js
+const newItem = createItem('My new task');
+apiClient.createItem(newItem).then(itemFromBackend => {
+  console.log(itemFromBackend);
+  // Nu kan vi uppdatera vårat state
+});
+```
+
+När det kommer till `onCompleatChange` så gör vi nästan exakt samma sak men här man vi testa att använda `async/await`
+
+```js
+onCompleatChange = async (itemToChange, isComplete) => {
+  await apiClient.updateItem({ ...itemToChange, isComplete });
+  // Business as usual (uppdatera statet precis som innan)
+};
+```
 
 #### Step 7:
 
@@ -81,13 +102,20 @@ Nice! Allt fungerar! 🌈
 
 Jag måste dock berätta en hemlighet. Bara för att något fungerar så betyder det inte att det är bra 😔
 
-I en enkel applikation som denna så fungerar det utmärkt att ha alla todos i `app.js` och importera api-klienten direkt till `app.js` men allt som applikationen växer kommer detta designmönster bli helt ohållbart. Låt oss säga att vi vill lägga till funktionalitet för att registrera användare. Ska vi då spara all användardata i `app.js`? Vad händer om vi behöver dela på data mellan olika komponenter, vi kan då bli tvungna att ha redundant data och vidare kommer vi behöva skicka data i många led allt eftersom att antalet komponenter växer. 
+I en enkel applikation som denna fungerar det utmärkt att ha alla todos i `app.js` och importera api-klienten direkt till `app.js` men allt som applikationen växer kommer detta designmönster bli ohållbart. Låt oss säga att vi vill lägga till funktionalitet för att registrera användare. Ska vi då spara all användardata i `app.js`? Vad händer om vi behöver dela på data mellan olika komponenter, vi kan då bli tvungna att ha redundant data och vidare kommer vi behöva skicka data i många led allt eftersom att antalet komponenter växer. 
 
-En alternativ lösning är att använda ett bibliotek för att hantera våra state. Två populära bibliotek är redux och mobx så låt oss kolla på dessa. 
+En alternativ lösning är att använda ett bibliotek för att hantera våra state. Två populära bibliotek är redux och mobx så låt oss kolla på dessa två.
 
-Låt oss först börja med Redux. Redux har som ide att det alltid ska finnas ett state och att det bara ska finnas ett data flöde. Det kan se ut så här:
+Skapa upp två nya git-brancher (vilket alltid är bra när man ska testa nya saker). Skapa en som heter `mobx` och en som heter `redux`.
 
-1. Användaren klickar på "Spara"
+```
+$ git checkout -b mobx
+$ git checkout -b redux
+```
+
+Låt oss först börja med Redux. Redux har som ide att det alltid ska finnas ett state och att det bara ska finnas ett dataflöde. Det kan se ut så här:
+
+1. Användaren klickar på "Save"
 2. En action skapas som heter "CREATE_TASK". Denna action innehåller även namnet på den nya todon
 3. Actionen ges till alla så kallade reducers och det är i en reducer som vi har möjlighet att uppdatera vårat state.
 4. När vi har uppdaterat vårat state kommer react reagera på att datan han ändrats och där med uppdatera komponenterna. 
@@ -105,10 +133,10 @@ export const createTask = itemName => ({
   item: createItem(itemName)
 });
 
-export const changeCompleatTask = (id, completed) => ({
+export const changeCompleatTask = (item, isComplete) => ({
   type: 'CHANGE_COMPLEAT_TASK',
-  id,
-  completed
+  id: item.id,
+  isComplete
 });
 ```
 
@@ -140,7 +168,7 @@ export const tasks = (state = initState, action) => {
         ...state,
         items: state.items.map(item => {
           if (item.id === action.id) {
-            return createItem(item.name, action.id, action.completed);
+            return createItem(item.name, action.id, action.isComplete);
           }
           return item;
         })
@@ -188,7 +216,7 @@ Sedan vill vi skapa två hjälp funktioner för att skapa och ändra en todo-tas
 ```js
 const mapDispatchToProps = dispatch => ({
   createTask: itemName => dispatch(createTask(itemName)),
-  changeCompleatTask: (id, completed) => dispatch(changeCompleatTask(id, completed))
+  changeCompleatTask: (item, isComplete) => dispatch(changeCompleatTask(item, isComplete))
 });
 ```
 
@@ -201,7 +229,7 @@ export const App = connect(
 )(AppComponent);
 ```
 
-Vi kan nu använda våra hjälp funktioner istället för den implementation som vi har för `onCreate` och `onCompleatChange`. Vidare behöver vi inget internt state längre i `App` eftersom vi har ett gemensamt state i redux istället så det kan vi också ta bort:
+Vi kan nu använda våra hjälpfunktioner istället för den implementation som vi har för `onCreate` och `onCompleatChange`. Vidare behöver vi inget internt state längre i `App` eftersom vi har ett gemensamt state i redux istället så det kan vi också ta bort:
 
 ```diff
 -  componentDidMount() {
@@ -210,17 +238,17 @@ Vi kan nu använda våra hjälp funktioner istället för den implementation som
 -      .then(items => this.setState({ items, loading: false }));
 -  }
 
-   onCompleatChange = (id, completed) => {
+   onCompleatChange = (itemToChange, isComplete) => {
 -    const newItemList = this.state.items.map(item => {
--      if (item.id === id) {
--        const newItem = createItem(item.name, id, completed);
+-      if (item.id === itemToChange.id) {
+-        const newItem = createItem(item.name, item.id, isComplete);
 -        apiClient.updateItem(newItem);
 -        return newItem;
 -      }
 -      return item;
 -    });
 -    this.setState({ items: newItemList });
-+    this.props.changeCompleatTask(id, completed);
++    this.props.changeCompleatTask(itemToChange, isComplete);
    };
 
    onCreate = itemName => {
@@ -232,7 +260,7 @@ Vi kan nu använda våra hjälp funktioner istället för den implementation som
    };
 ```
 
-Detta betydär även att vi ska läsa `loading` och `items` från det gemensa statet:
+Detta betyder även att vi ska läsa `loading` och `items` från det gemensamma statet:
 ```diff
 - if (this.state.loading) {
 + if (this.props.tasks.loading) {
@@ -252,8 +280,8 @@ import { NewItem } from './new-task';
 import { createTask, changeCompleatTask } from './actions';
 
 class AppComponent extends React.Component {
-  onCompleatChange = (id, completed) => {
-    this.props.changeCompleatTask(id, completed);
+  onCompleatChange = (itemToChange, isComplete) => {
+    this.props.changeCompleatTask(itemToChange, isComplete);
   };
 
   onCreate = itemName => {
@@ -282,8 +310,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   createTask: itemName => dispatch(createTask(itemName)),
-  changeCompleatTask: (id, completed) =>
-    dispatch(changeCompleatTask(id, completed))
+  changeCompleatTask: (item, isComplete) => dispatch(changeCompleatTask(item, isComplete))
 });
 
 export const App = connect(
@@ -307,11 +334,11 @@ const store = createStore(
 
 #### Step 9:
 
-Men vad händer! Dina ändringar spars inte längre på backend. Detta kan enkelt fixas genom att lägga till ett så kallat middleware till redux som "tjuvlyssnar" på dina actions och kan utföra sido effekter (dvs. en händelse som behöver läsa eller skriva till omvärden, ex. en backend server).
+Men vad händer! Dina ändringar sparas inte längre på backend. Detta kan enkelt fixas genom att lägga till ett så kallat middleware till redux som "tjuvlyssnar" på dina actions och kan utföra sido effekter (dvs. en händelse som behöver läsa eller skriva till omvärlden, ex. en backend server).
 
 I detta fall kommer vi använda av en så kallad `thunk`. Vad detta möjliggör är att vi kan dispatcha en funktion istället för en action. 
 
-Nu kanske du tänker "va?". I så fall vill jag försöka förtydliga det hela. Hittills har vi dispatchat en action. Exempelvis:
+Nu kanske du tänker "va?". I så fall vill jag försöka förtydliga det hela. Hittills har vi dispatchat (jag är ledsen för svengelskan) en action. Exempelvis:
 
 ```js
 export const createTask = itemName => ({
@@ -326,19 +353,6 @@ export const createTask = itemName => ({
 const itemName = 'My new task';
 
 dispatch(createTask(itemName))
-```
-
-Koden ovan är ju mer eller mindre samma sak som:
-
-```js
-dispatch({
-  type: 'CREATE_TASK',
-  item: {
-    id: Math.random(),
-    name: 'My new task',
-    isComplete: false
-  }
-})
 ```
 
 Vad `thunk` möjliggör att vi kan ge en funktion till dispatch som sedan exekveras. Ex:
@@ -358,7 +372,35 @@ export const getAllTasks = () => dispatch => {
 dispatch(getAllTasks())
 ```
 
-På det här viset har vi möjlighet att uföra flera actions i en action. Som i fallet ovan utförs det totalt tre stycken actions (dispatch anropas tre gånger) i functionen `getAllTasks`. Detta gör alltså att vi kan utföra asynkrona anrop. 
+På det här viset har vi möjlighet att utföra flera actions i en action. Som i fallet ovan utförs det totalt tre stycken actions (dispatch anropas tre gånger) i funktionen `getAllTasks`. Detta gör alltså att vi kan utföra asynkrona anrop.
+
+Det första vi måste göra är att lägga till `thunk` som `middleware`. Detta kan du göra genom att ändra i `index.js`:
+
+```js
+import React from 'react';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { render } from 'react-dom';
+import thunk from 'redux-thunk';
+import { App } from './app';
+import { rootReducer } from './reducers';
+import { apiClient } from './api-client';
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(
+  rootReducer,
+  composeEnhancers(applyMiddleware(thunk.withExtraArgument(apiClient)))
+);
+
+const RootApp = () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+
+render(<RootApp />, document.getElementById('root'));
+```
 
 Låt oss skriva om `createTask` och `changeCompleatTask` i `actions/tasks.js` till:
 
@@ -402,7 +444,18 @@ export const getAllTasks = () => (dispatch, getState, api) => {
 };
 ```
 
-Och anropa sedan denna i vid `componentDidMount` i `AppComponent`:
+Och lägg till `getAllTasks` i `mapDispatchToProps`:
+
+```diff
+const mapDispatchToProps = dispatch => ({
++  getAllTasks: () => dispatch(getAllTasks()),
+   createTask: itemName => dispatch(createTask(itemName)),
+   changeCompleatTask: (item, isComplete) =>
+     dispatch(changeCompleatTask(item, isComplete))
+});
+```
+
+Och anropa sedan lägga till `componentDidMount` i `AppComponent`:
 
 ```js
 componentDidMount() {
@@ -412,11 +465,17 @@ componentDidMount() {
 
 #### Step 10:
 
+Andas ut och tänk efter. Var detta bra? Dåligt?
+
+Commita allt som du har gjort och gå vidare i ditt liv.
+
+#### Step 11:
+
 Låt oss nu kolla på mobx. Checka ut branchen som du skapa tidigare genom `git checkout mobx`.
 
-Mobx fungerar lite anorlunda. Mobx bygger på att man sätter upp modeller och att man kan lyssna på förändringar av dessa modeller och sedan uppdatera delar av appen när modellen ändras.
+Mobx fungerar lite annorlunda mot Redux. Mobx bygger på att man sätter upp modeller och att man kan lyssna på förändringar av dessa modeller och sedan uppdatera delar av appen när modellen ändras.
 
-Låts oss hoppa in i koden och sena kollar vi på hur det fungerar.
+Låts oss hoppa in i koden och sedan kollar vi på hur det fungerar.
 
 Låt oss först skapa upp våra modeller:
 
@@ -448,7 +507,7 @@ export class Task {
 ##### store/tasks.js
 
 ```js
-import { observable, decorate } from 'mobx';
+import { observable } from 'mobx';
 import { Task } from './task';
 import { createItem } from '../item';
 
@@ -488,13 +547,13 @@ export class RootStore {
 }
 ```
 
-Låt oss nu skapa upp våran store i `index.js`:
+Låt oss nu skapa upp vår store i `index.js`:
 
 ```js
 const store = new RootStore(apiClient);
 ```
 
-och sedan använda `Provider` för att tillgodo se våran `store` till alla komponenter. Precis som vi gjorde i redux fallet. Koden kommer således bli något i stil med:
+och sedan använda `Provider` för att tillgodo se vår `store` till alla komponenter. Precis som vi gjorde i redux fallet. Koden kommer således bli något i stil med:
 
 ```js
 import React from 'react';
@@ -515,7 +574,7 @@ const RootApp = () => (
 render(<RootApp />, document.getElementById('root'));
 ```
 
-Vi måste nu även uppdatera `app.js` så vi börjar lyssna på förändringarna. Detta gör vi genom att lägga på attrebutet `observer`. Sedan använder vi `inject` för att kunna ta in våra tasks som props. `app.js` kommer sedan se ut något i stil med:
+Vi måste nu även uppdatera `app.js` så vi börjar lyssna på förändringarna. Detta gör vi genom att lägga på attributet `observer`. Sedan använder vi `inject` för att kunna ta in våra tasks som props. `app.js` kommer sedan se ut något i stil med:
 
 ```js
 import React, { Fragment } from 'react';
@@ -554,7 +613,7 @@ Nu kanske du tänker "va fan händer?".
 - JAG ÄR LUGN!
 - Okej, låt oss ta det här steg för steg.
 
-Låt oss första kolla på vår model `Task` och låt oss skapa bort lite saker för att förenkla den en aning:
+Låt oss första kolla på vår modell `Task` och låt oss skapa bort lite saker för att förenkla den en aning:
 
 ```js
 export class Task {
@@ -564,7 +623,7 @@ export class Task {
 }
 ```
 
-Vad betyder detta? Och vad är `@observable` för något? `@` betyder att det är en decorator (Du har säker redan kommit i kontakt med detta i Java/C#/Python etc. om inte så är det också lugnt). Detta betyder att vi kommer lägga på meta data under runtime. I detta fall kan man lite slarvigt översätta `Task` till:
+Vad betyder detta? Och vad är `@observable` för något? - `@` betyder att det är en decorator (Du har säker redan kommit i kontakt med detta i Java/C#/Python etc. om inte så är det också lugnt). Detta betyder att vi kommer lägga på meta data under runtime. I detta fall kan man lite slarvigt översätta klassen `Task` till (utan `@observable`-decorator):
 
 ```js
 export class Task {
@@ -624,7 +683,7 @@ task.name = 'Oskar';
 task.id = 2;
 ```
 
-Så hur kan mobx veta vad vi är beroende av? – Om du kollar i `app.js` så ser du att vi har laggt till `@observer` ovan klassen. Detta kommer göra att mobx skriver över `render`-metoden och analysera vilka model porperys som denna render metod är beroende av. På se vis vet mobx vilka komponenter som mobx behöver exekvera om modelen ändras. Smart va?
+Så hur kan mobx veta vad vi är beroende av? – Om du kollar i `app.js` så ser du att vi har lagt till `@observer` ovan klassen. Detta kommer göra att mobx skriver över `render`-metoden och analysera vilka modell propertys som denna render metod är beroende av. På så vis vet mobx vilka komponenter som mobx behöver exekvera om modellen ändras. Smart va?
 
 Det är dock viktigt att se upp här för att i `render` i `App` så accessar vi enbart `tasks.loading` och `tasks.items`. Detta betyder att `App` enbart kommer reagera ifall `loading` eller `items` ändras. Så vad händer om `isComplete` på en specifik task ändras? - Inget! Eftersom vi läser `isComplete` i `task-list.js` och den komponenten har vi inte sagt att mobx ska observera. Detta kan vi enkelt fixa genom att lägga till: `observer`
 
@@ -655,10 +714,10 @@ export const TaskList = observer(({ items }) => (
 ));
 ```
 
-#### Step 11:
+#### Step 12:
 
 Uppdatera `new-task.js` så att den använder mobx istället för `setState`.
 
-#### Step 12:
+#### Step 13:
 
 Seriöst? Har du hunnit hit på labbtiden? I så fall tycker jag att du kan hjälpa någon som inte har kommit lika långt 😊
