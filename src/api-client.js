@@ -7,13 +7,15 @@ export const apiClient = {
   },
 
   createItem(item) {
+    const serverItem = Object.assign({}, item);
+    delete serverItem.id;
     console.log('Create a new item');
     return fetch(BASE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(item)
+      body: JSON.stringify(serverItem)
     }).then(result => result.json());
   },
 
