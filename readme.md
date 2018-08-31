@@ -4,7 +4,7 @@
 Klona repot:
 
 ```
-$ git clone git@github.com:tjoskar/react-workshop.git
+$ git clone git@git.valtech.se:talangprogrammet/react-todo.git
 ```
 
 Installera alla beroenden
