@@ -43,7 +43,7 @@ class AppComponent extends React.Component {
           items={this.state.items}
           onCompleatChange={this.onCompleatChange}
         />
-        <NewItem onCreate={this.onCreate} />
+        <NewItem />
       </Fragment>
     );
   }

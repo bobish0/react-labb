@@ -6,13 +6,13 @@ export class NewItem extends Component {
   };
 
   onChange = event => {
-    this.setState({ itemName: event.target.value });
+    console.log(event.target.value);
+    this.setState({ itemName: '' });
   };
 
   onSubmit = event => {
     event.preventDefault();
-    this.props.onCreate(this.state.itemName);
-    this.setState({ itemName: '' });
+    // this.props.onCreate(this.state.itemName);
   };
 
   render() {
