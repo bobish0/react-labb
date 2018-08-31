@@ -19,7 +19,7 @@ Starta appen för att se att allt fungerar som det ska.
 $ npm start
 ```
 
-[http://localhost:4444/](http://localhost:4444/)
+[http://localhost:1234/](http://localhost:1234/)
 
 #### Step 2:
 
