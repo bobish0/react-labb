@@ -3,7 +3,19 @@ const BASE_URL = 'http://localhost:5000/api/todo';
 export const apiClient = {
   getAllItems() {
     console.log('Fetching all todos item');
-    return fetch(BASE_URL).then(result => result.json());
+    return Promise.resolve([
+      {
+        id: 1,
+        name: 'Buy cat',
+        isComplete: true
+      },
+      {
+        id: 2,
+        name: 'Buy dog',
+        isComplete: false
+      }
+    ]);
+    // return fetch(BASE_URL).then(result => result.json());
   },
 
   createItem(item) {

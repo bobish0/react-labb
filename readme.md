@@ -71,6 +71,29 @@ Nu är det dags att knyta samman allt med ditt api 🚀
 
 I sann tv kocks anda har jag förberett en api klient för dig. 
 
+Börja med att uppdatera `api-client.js` så att vi hämtar alla items från api:t:
+
+```diff
+ getAllItems() {
+  console.log('Fetching all todos item');
+-   return Promise.resolve([
+-     {
+-      id: 1,
+-      name: 'Buy cat',
+-      isComplete: true
+-    },
+-    {
+-      id: 2,
+-      name: 'Buy dog',
+-      isComplete: false
+-    }
+-  ]);
+-  // return fetch(BASE_URL).then(result => result.json());
++ return fetch(BASE_URL).then(result => result.json());
+},
+```
+
+
 Eftersom det är backend som bestämmer id:t så behöver vi göra anropet till backen innan vi kan stoppa in den i vårat egna state.
 
 Uppdatera `app.js` så att vi anropar backend.
