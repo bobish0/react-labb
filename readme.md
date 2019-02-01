@@ -23,7 +23,7 @@ $ npm start
 
 #### Step 2:
 
-Du borde nu se ett inputfält, en knapp och lite text. Nice! 🙌
+Du borde nu se ett inputfält och en knapp. Nice! 🙌
 
 Skriv något vackert i inputfältet. Märker du att något är fel? Det händer inget när du skriver? Varför? Om du öppnar dev-tools i din webbläsare så ser du dock att vi loggar det du skrivet. Så vad händer egentligen?
 
@@ -35,9 +35,9 @@ Om du tittar på template:en för inputfältet så ser den ut så här: `<input 
 
 #### Step 3:
 
-Tasken listas inte på sidan 😢 Fixa problemet!
+Det visas inga tasks på sidan 😢 Fixa problemet!
 
-Ledtråd: I `task-list.js` skrivs bara en tom lista ut. Så ska det ju inte vara. Se till att komponenten får listan av items som props. Se även till att skriva ut namnet på elementet, istället för hela elementet.  
+Ledtråd: I `task-list.js` skrivs bara en tom lista ut. Så ska det ju inte vara. Se till att komponenten använder listan items som den får som props istället. Se även till att bara skriva ut namnet på elementet, istället för hela elementet.  
 
 #### Step 4:
 
@@ -61,13 +61,13 @@ Ledtråd: Du kan skapa upp en checkbox genom följande html kod:
 
 Du kan sedan säga om den ska vara ifylld eller inte genom att ge den följande attribut: `checked={item.isComplete}`.
 
-Sedan får du ett ett event varje gång användaren klickar i checkboxen genom att tilldela följande attribut: `onChange={event => console.log('Update item: ' + item + '. Complete: event.target.checked')`
+Sedan får du ett ett event varje gång användaren klickar i checkboxen genom att tilldela följande attribut: `onChange={event => console.log('Update item: ' + item + '. Complete: event.target.checked')}`
 
-Och som av en slup så behöver funktionen `onCompleatChange` ett item och huruvida todo:n är klar eller inte.
+Och som av en slup så behöver funktionen `onCompleteChange` ett item och huruvida todo:n är klar eller inte.
 
 #### Step 7:
 
-Nu är det dags att knyta samman allt med ditt api 🚀
+Nu är det dags att knyta samman allt med ditt underbara todo-api 🚀
 
 I sann tv kocks anda har jag förberett en api klient för dig. 
 
@@ -93,10 +93,11 @@ Börja med att uppdatera `api-client.js` så att vi hämtar alla items från api
 },
 ```
 
+Starta igång ditt [TalangApi](https://git.valtech.se/talangprogrammet/talang-api) och kontrollera att din sida skriver ut todo-items från api:t.
 
-Eftersom det är backend som bestämmer id:t så behöver vi göra anropet till backen innan vi kan stoppa in den i vårat egna state.
+Eftersom det är backend som bestämmer id:t för objekten så behöver vi göra anropet till backen innan vi kan stoppa in den i vårat egna state.
 
-Uppdatera `app.js` så att vi anropar backend.
+Uppdatera `app.js` så att vi anropar backend när vi skapar items.
 
 Ledtråd:
 
@@ -110,14 +111,16 @@ apiClient.createItem(newItem).then(itemFromBackend => {
 });
 ```
 
-När det kommer till `onCompleatChange` så gör vi nästan exakt samma sak men här man vi testa att använda `async/await`
+När det kommer till `onCompleteChange` så gör vi nästan exakt samma sak men här man vi testa att använda `async/await`
 
 ```js
-onCompleatChange = async (itemToChange, isComplete) => {
+onCompleteChange = async (itemToChange, isComplete) => {
   await apiClient.updateItem({ ...itemToChange, isComplete });
   // Business as usual (uppdatera statet precis som innan)
 };
 ```
+
+Kontrollera att dina items får korrekta id:n och dubbelkolla gärna med Postman eller Insomnia mot ditt api att det uppdateras korrekt.
 
 #### Step 8:
 
@@ -252,7 +255,7 @@ export const App = connect(
 )(AppComponent);
 ```
 
-Vi kan nu använda våra hjälpfunktioner istället för den implementation som vi har för `onCreate` och `onCompleatChange`. Vidare behöver vi inget internt state längre i `App` eftersom vi har ett gemensamt state i redux istället så det kan vi också ta bort:
+Vi kan nu använda våra hjälpfunktioner istället för den implementation som vi har för `onCreate` och `onCompleteChange`. Vidare behöver vi inget internt state längre i `App` eftersom vi har ett gemensamt state i redux istället så det kan vi också ta bort:
 
 ```diff
 -  componentDidMount() {
@@ -261,7 +264,7 @@ Vi kan nu använda våra hjälpfunktioner istället för den implementation som 
 -      .then(items => this.setState({ items, loading: false }));
 -  }
 
-   onCompleatChange = (itemToChange, isComplete) => {
+   onCompleteChange = (itemToChange, isComplete) => {
 -    const newItemList = this.state.items.map(item => {
 -      if (item.id === itemToChange.id) {
 -        const newItem = createItem(item.name, item.id, isComplete);
@@ -303,7 +306,7 @@ import { NewItem } from './new-task';
 import { createTask, changeCompleatTask } from './actions';
 
 class AppComponent extends React.Component {
-  onCompleatChange = (itemToChange, isComplete) => {
+  onCompleteChange = (itemToChange, isComplete) => {
     this.props.changeCompleatTask(itemToChange, isComplete);
   };
 
@@ -319,7 +322,7 @@ class AppComponent extends React.Component {
       <Fragment>
         <TaskList
           items={this.props.tasks.items}
-          onCompleatChange={this.onCompleatChange}
+          onCompleteChange={this.onCompleteChange}
         />
         <NewItem onCreate={this.onCreate} />
       </Fragment>
@@ -714,8 +717,8 @@ Det är dock viktigt att se upp här för att i `render` i `App` så accessar vi
 import React from 'react';
 + import { observer } from 'mobx-react';
 
-- export const TaskList = ({ items, onCompleatChange }) => (
-+ export const TaskList = observer(({ items, onCompleatChange }) => (
+- export const TaskList = ({ items, onCompleteChange }) => (
++ export const TaskList = observer(({ items, onCompleteChange }) => (
 ```
 
 Vidare så kan vi nu mer anropa `changeCompleatTask` direkt från ett `item`:

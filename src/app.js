@@ -16,7 +16,8 @@ class AppComponent extends React.Component {
       .then(items => this.setState({ items, loading: false }));
   }
 
-  onCompleatChange = (itemToChange, isComplete) => {
+
+  onCompleteChange = async (itemToChange, isComplete) => {
     const newItemList = this.state.items.map(item => {
       if (item.id === itemToChange.id) {
         return createItem(item.name, itemToChange.id, isComplete);
@@ -41,7 +42,7 @@ class AppComponent extends React.Component {
       <Fragment>
         <TaskList
           items={this.state.items}
-          onCompleatChange={this.onCompleatChange}
+          onCompleteChange={this.onCompleteChange}
         />
         <NewItem />
       </Fragment>
