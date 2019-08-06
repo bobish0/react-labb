@@ -1,9 +1,9 @@
 import React from 'react';
 
-export const TaskList = ({ items, onCompleteChange }) => (
+export const TaskList = ({ tasks, onCompleteChange }) => (
   <ul>
-    {[].map(item => (
-      <li key={item.id}>{JSON.stringify(item)}</li>
+    {[].map(task => (
+      <li key={task.id}>{JSON.stringify(task)}</li>
     ))}
   </ul>
 );

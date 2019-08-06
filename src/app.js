@@ -1,50 +1,49 @@
 import React, { Fragment } from 'react';
 import { TaskList } from './task-list';
-import { NewItem } from './new-task';
+import { NewTask } from './new-task';
 import { apiClient } from './api-client';
-import { createItem } from './item';
+import { createTask } from './task';
 
 class AppComponent extends React.Component {
   state = {
-    items: [],
+    tasks: [],
     loading: true
   };
 
   componentDidMount() {
     apiClient
-      .getAllItems()
-      .then(items => this.setState({ items, loading: false }));
+      .getAllTasks()
+      .then(tasks => this.setState({ tasks, loading: false }));
   }
 
-
-  onCompleteChange = async (itemToChange, isComplete) => {
-    const newItemList = this.state.items.map(item => {
-      if (item.id === itemToChange.id) {
-        return createItem(item.name, itemToChange.id, isComplete);
+  onCompleteChange = async (taskToChange, isComplete) => {
+    const newTaskList = this.state.tasks.map(task => {
+      if (task.id === taskToChange.id) {
+        return createTask(task.name, taskToChange.id, isComplete);
       }
-      return item;
+      return task;
     });
-    this.setState({ ...this.state, items: newItemList });
+    this.setState({ ...this.state, tasks: newTaskList });
   };
 
-  onCreate = itemName => {
-    const newItem = createItem(itemName);
+  onCreate = taskName => {
+    const newTask = createTask(taskName);
     this.setState({
-      items: [...this.state.items, newItem]
+      tasks: [...this.state.tasks, newTask]
     });
   };
 
   render() {
-    if (this.state.loading || !this.state.items) {
+    if (this.state.loading || !this.state.tasks) {
       return <h1>Loading...</h1>;
     }
     return (
       <Fragment>
         <TaskList
-          items={this.state.items}
+          tasks={this.state.tasks}
           onCompleteChange={this.onCompleteChange}
         />
-        <NewItem />
+        <NewTask />
       </Fragment>
     );
   }

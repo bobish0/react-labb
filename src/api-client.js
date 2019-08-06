@@ -1,55 +1,55 @@
 const BASE_URL = 'http://localhost:5000/api/todo';
 
 export const apiClient = {
-  getAllItems() {
-    console.log('Fetching all todos item');
+  getAllTasks() {
+    console.log('Fetching all todo tasks');
     return Promise.resolve([
       {
         id: 1,
-        name: 'Buy cat',
+        name: 'Feed cat',
         isComplete: true
       },
       {
         id: 2,
-        name: 'Buy dog',
+        name: 'Save world',
         isComplete: false
       }
     ]);
     // return fetch(BASE_URL).then(result => result.json());
   },
 
-  createItem(item) {
-    const serverItem = Object.assign({}, item);
-    delete serverItem.id;
-    console.log('Create a new item');
+  createTask(task) {
+    const serverTask = Object.assign({}, task);
+    delete serverTask.id;
+    console.log('Create a new task');
     return fetch(BASE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(serverItem)
+      body: JSON.stringify(serverTask)
     }).then(result => result.json());
   },
 
-  removeItem(item) {
-    console.log('Removing item');
-    return fetch(`${BASE_URL}/${item.id}`, {
+  removeTask(task) {
+    console.log('Removing task');
+    return fetch(`${BASE_URL}/${task.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(item)
+      body: JSON.stringify(task)
     });
   },
 
-  updateItem(item) {
-    console.log('Updating item');
-    return fetch(`${BASE_URL}/${item.id}`, {
+  updateTask(task) {
+    console.log('Updating task');
+    return fetch(`${BASE_URL}/${task.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(item)
+      body: JSON.stringify(task)
     });
   }
 };

@@ -1,26 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 
-export class NewItem extends Component {
-  state = {
-    itemName: ''
-  };
+export const NewTask = (props) => {
 
-  onChange = event => {
+  const [task, setTask] = useState({name: ''});
+
+  const onChange = event => {
     console.log(event.target.value);
-    this.setState({ itemName: '' });
-  };
-
-  onSubmit = event => {
-    event.preventDefault();
-    // this.props.onCreate(this.state.itemName);
-  };
-
-  render() {
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input value={this.state.itemName} onChange={this.onChange} />
-        <button>Save</button>
-      </form>
-    );
+    setTask({name: ''});
   }
+
+  const onSubmit = event => {
+    event.preventDefault();
+    // props.onCreate(task.name);
+  };
+
+  return (
+    <form onSubmit={onSubmit}>
+      <input type='text' value={task.name} onChange={onChange} />
+      <button>Save</button>
+    </form>
+  );
 }
