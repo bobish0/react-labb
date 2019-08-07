@@ -1,4 +1,4 @@
-export function createTask(name, id = Math.random(), isComplete = false) {
+export function constructTask(name, id = Math.random(), isComplete = false) {
   return {
     id,
     name,
