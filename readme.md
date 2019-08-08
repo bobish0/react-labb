@@ -544,15 +544,15 @@ export class Task {
   api
 
   constructor(api, id, name, isComplete) {
-    this.api = api
-    this.id = id
-    this.name = name
-    this.isComplete = isComplete
+    this.api = api;
+    this.id = id;
+    this.name = name;
+    this.isComplete = isComplete;
   }
 
   async changeCompleteTask(isComplete) {
-    await this.api.updateTask({ id: this.id, name: this.name, isComplete })
-    this.isComplete = isComplete
+    await this.api.updateTask({ id: this.id, name: this.name, isComplete });
+    this.isComplete = isComplete;
   }
 }
 ```
@@ -562,7 +562,7 @@ export class Task {
 ```js
 import { observable } from 'mobx';
 import { Task } from './task';
-import { createTask } from '../task';
+import { constructTask } from '../task';
 
 export class Tasks {
   @observable tasks = [];
@@ -570,20 +570,20 @@ export class Tasks {
   api
 
   constructor(api) {
-    this.api = api
+    this.api = api;
   }
 
   async getAllTasks() {
     this.loading = true;
-    const tasks = await this.api.getAllTasks()
-    this.tasks = tasks.map(task => new Task(this.api, task.id, task.name, task.isComplete))
+    const tasks = await this.api.getAllTasks();
+    this.tasks = tasks.map(task => new Task(this.api, task.id, task.name, task.isComplete));
     this.loading = false;
   }
 
   async createTask(taskName) {
-    const task = await this.api.createTask(createTask(taskName))
-    const newTask = new Task(this.api, task.id, task.name, task.isComplete)
-    this.tasks.push(newTask)
+    const task = await this.api.createTask(constructTask(taskName));
+    const newTask = new Task(this.api, task.id, task.name, task.isComplete);
+    this.tasks.push(newTask);
   }
 }
 ```
@@ -648,12 +648,12 @@ export class App extends React.Component {
   };
 
   render() {
-    if (this.props.tasks.loading || !this.props.tasks.items) {
+    if (this.props.tasks.loading) {
       return <h1>Loading...</h1>;
     }
     return (
       <Fragment>
-        <TaskList tasks={this.props.tasks.items} />
+        <TaskList tasks={this.props.tasks.tasks} />
         <NewTask onCreate={this.onCreate} />
       </Fragment>
     );
@@ -683,7 +683,7 @@ export class Task {
   _id;
   get id() {
     // Informera mobx om att vi vill komma åt 'id'
-    informMobx('get id')
+    informMobx('get id');
     return this._id;
   };
   set id(id) {
@@ -694,7 +694,7 @@ export class Task {
   _name;
   get name() {
     // Informera mobx om att vi vill komma åt 'name'
-    informMobx('get name')
+    informMobx('get name');
     return this._name;
   };
   set name(name) {
@@ -705,7 +705,7 @@ export class Task {
   _isComplete;
   get isComplete() {
     // Informera mobx om att vi vill komma åt 'isComplete'
-    informMobx('get isComplete')
+    informMobx('get isComplete');
     return this._isComplete;
   };
   set isComplete(isComplete) {
@@ -718,14 +718,14 @@ export class Task {
 Detta innebär att så fort vi använder ex. `name` så kommer mobx vara medveten om detta och så fort vi uppdaterar `name` så vet mobx att någon använder `name` och att vi kanske kommer behöva meddela om att `name` har ändrats.
 
 ```js
-const task = new Task()
+const task = new Task();
 
 task.id = 1;
 task.name = 'Learn react';
 
 autorun(() => {
   // "Learn mobx" skrivs ut och mobx blir medveten om att vi är beroende av `name`
-  console.log(task.name)
+  console.log(task.name);
 })
 
 // mobx blir medveten om att `name` har ändrats och kan därför meddela
@@ -758,7 +758,7 @@ export const TaskList = observer(({ tasks }) => (
         <input
           type="checkbox"
           checked={task.isComplete}
-          onChange={event => task.changecompleteTask(event.target.checked)}
+          onChange={event => task.changeCompleteTask(event.target.checked)}
         />
         {task.name}
       </li>
@@ -769,7 +769,7 @@ export const TaskList = observer(({ tasks }) => (
 
 #### Step 13:
 
-Uppdatera `new-task.js` så att den använder mobx istället för `setState`.
+Uppdatera `new-task.js` så att den använder mobx istället för en react hook.
 
 #### Step 14:
 
