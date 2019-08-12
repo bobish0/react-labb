@@ -61,7 +61,7 @@ Ledtråd: Du kan skapa upp en checkbox genom följande html kod:
 
 Du kan sedan säga om den ska vara ifylld eller inte genom att ge den följande attribut: `checked={task.isComplete}`.
 
-Sedan får du ett event varje gång användaren klickar i checkboxen genom att tilldela följande attribut: `onChange={event => console.log('Update task: ' + task + '. Complete: event.target.checked')}`
+Sedan får du ett event varje gång användaren klickar i checkboxen genom att tilldela följande attribut: `onChange={event => console.log('Update task: ' + task + '. Complete: ' + event.target.checked)}`
 
 Och som av en slump så behöver funktionen `onCompleteChange` en todo och huruvida todo:n är klar eller inte.
 
@@ -104,7 +104,7 @@ Ledtråd:
 Låt oss börja med `onCreate`. `apiClient.createTask` förväntar sig en ny task och funktionen kommer sedan returnera ett Promises object och i svaret till detta Promises har vi det nya objektet som backend ger tillbaka om allt har gått bra. Ex.
 
 ```js
-const newTask = createTask('My new task');
+const newTask = constructTask('My new task');
 apiClient.createTask(newTask).then(taskFromBackend => {
   console.log(taskFromBackend);
   // Nu kan vi uppdatera vårat state
