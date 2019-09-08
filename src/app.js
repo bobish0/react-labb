@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
-import { TaskList } from './task-list';
-import { NewTask } from './new-task';
-import { apiClient } from './api-client';
-import { constructTask } from './task';
+import { TaskList } from './tasks/task-list';
+import { NewTask } from './tasks/new-task';
+import { apiClient } from './api/api-client';
+import { constructTask } from './tasks/task';
 
 class AppComponent extends React.Component {
   state = {

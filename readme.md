@@ -27,7 +27,7 @@ Du borde nu se ett inputfält och en knapp. Nice! 🙌
 
 Skriv något vackert i inputfältet. Märker du att något är fel? Det händer inget när du skriver? Varför? Om du öppnar dev-tools i din webbläsare så ser du dock att vi loggar det du skrivet. Så vad händer egentligen?
 
-Öppna upp filen `new-task.js` och se om du kan fixa problemet.
+Öppna upp filen `tasks/new-task.js` och se om du kan fixa problemet.
 
 Ledtråd:
 
@@ -37,11 +37,11 @@ Om du tittar på template:en för inputfältet så ser den ut så här: `<input 
 
 Det visas inga tasks på sidan 😢 Fixa problemet!
 
-Ledtråd: I `task-list.js` skrivs bara en tom lista ut. Så ska det ju inte vara. Se till att komponenten använder listan tasks som den får som props istället. Se även till att bara skriva ut namnet på elementet, istället för hela elementet.
+Ledtråd: I `tasks/task-list.js` skrivs bara en tom lista ut. Så ska det ju inte vara. Se till att komponenten använder listan tasks som den får som props istället. Se även till att bara skriva ut namnet på elementet, istället för hela elementet.
 
 #### Step 4:
 
-Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer som inget när man klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `render` i `app.js` och i `onSubmit` i `new-task.js`).
+Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer som inget när man klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `tasks/new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `render`, `app.js`, `onSubmit`, och `tasks/new-task.js`).
 
 #### Step 5:
 
@@ -51,7 +51,7 @@ Se även till att töm input fältet när man har skapat en todo.
 
 Så där, nu kan man skapa nya todos och vi kan se alla i listan men vi kan inte markera dom som klara 😕
 
-Din uppgift blir nu att lägga till en checkbox i `task-list.js` som gör att man kan markera en todo som klar.
+Din uppgift blir nu att lägga till en checkbox i `tasks/task-list.js` som gör att man kan markera en todo som klar.
 
 Ledtråd: Du kan skapa upp en checkbox genom följande html kod:
 
@@ -71,7 +71,7 @@ Nu är det dags att knyta samman allt med ditt underbara todo-api 🚀
 
 I sann tv kocks anda har en api klient förberetts för dig.
 
-Börja med att uppdatera `api-client.js` så att vi hämtar alla todos från api:t:
+Börja med att uppdatera `api/api-client.js` så att vi hämtar alla todos från api:t:
 
 ```diff
  getAllTasks() {
@@ -322,9 +322,9 @@ Så att i slutändan har vi något i stil med:
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { changeCompleteTask, createTask } from './actions/tasks';
-import { TaskList } from './task-list';
-import { NewTask } from './new-task';
-import { apiClient } from './api-client';
+import { TaskList } from './tasks/task-list';
+import { NewTask } from './tasks/new-task';
+import { apiClient } from './api/api-client';
 
 class AppComponent extends React.Component {
 
@@ -430,7 +430,7 @@ import { Provider } from 'react-redux';
 + import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducers/index.js';
-import { apiClient } from './api-client';
+import { apiClient } from './api/api-client';
 import { App } from './app';
 
 - const store = createStore(rootReducer);
