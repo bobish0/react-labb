@@ -39,11 +39,11 @@ class AppComponent extends React.Component {
     }
     return (
       <Fragment>
+        <NewTask />
         <TaskList
           tasks={this.state.tasks}
           onCompleteChange={this.onCompleteChange}
         />
-        <NewTask />
       </Fragment>
     );
   }
