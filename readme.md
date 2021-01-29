@@ -4,7 +4,7 @@
 Klona repot:
 
 ```
-$ git clone git@git.valtech.se:talangprogrammet/react-todo.git
+$ git clone ssh://git@bitbucket.valtech.de:7999/talang/react-todo.git
 ```
 
 Installera alla beroenden
