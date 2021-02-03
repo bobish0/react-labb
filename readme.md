@@ -93,7 +93,7 @@ Börja med att uppdatera `api/api-client.js` så att vi hämtar alla todos från
 },
 ```
 
-Starta igång ditt [TalangApi](https://git.valtech.se/talangprogrammet/talang-api) och kontrollera att din sida skriver ut todo-tasks från api:t.
+Starta igång ditt [TalangApi](https://bitbucket.valtech.de/bb/projects/TALANG/repos/talang-api/browse) och kontrollera att din sida skriver ut todo-tasks från api:t.
 
 Eftersom det är backend som bestämmer id:t för objekten så behöver vi göra anropet till backen innan vi kan stoppa in den i vårat egna state.
 
