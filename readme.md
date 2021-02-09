@@ -95,7 +95,21 @@ Börja med att uppdatera `api/api-client.js` så att vi hämtar alla todos från
 
 Starta igång ditt [TalangApi](https://bitbucket.valtech.de/bb/projects/TALANG/repos/talang-api/browse) och kontrollera att din sida skriver ut todo-tasks från api:t.
 
-Det finns stor risk att du får problem med CORS (Cross-Origin Resource Sharing). Problemet är att react-appen kör på en url och api:et på en annan. Det lättaste sättet att lösa det är att installera följande tillägg i webbläsaren: CORS Unblock. Denna approach funkar bra i lokal utveckling, men inte så bra i produktion. Dock kan vi skippa den konfigurationen och köra med tillägget för nu.
+Det finns stor risk att du får problem med CORS (Cross-Origin Resource Sharing). Problemet är att react-appen kör på en url och api:et på en annan. För att lösa det, gå till din node-applikation och installera följande paket:
+```
+npm install @koa/cors --save
+```
+Lägg sedan till detta i `index.js` :
+```
+const cors = require('@koa/cors');
+...
+app.use(cors());
+
+```
+
+Man kan lägga till flera app.use(...) så bara att lägga de under varandra.
+
+Om du inte lyckas få till det, kan du lösa det genom att installera följande tillägg i webbläsaren: CORS Unblock. Denna approach funkar bra i lokal utveckling, men inte så bra i produktion. Dock kan vi skippa den konfigurationen och köra med tillägget för nu.
 
 Eftersom det är backend som bestämmer id:t för objekten så behöver vi göra anropet till backend innan vi kan stoppa in den i vårat egna state.
 
