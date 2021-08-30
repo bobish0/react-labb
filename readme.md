@@ -1,25 +1,32 @@
 # React workshop
 
 #### Step 1:
+
 Klona repot:
 
 ```
 $ git clone ssh://git@bitbucket.valtech.de:7999/talang/react-todo.git
 ```
 
-Installera alla beroenden
+Ställ dig i mappen:
+
+```
+cd react-todo
+```
+
+Installera alla beroenden:
 
 ```
 $ npm install
 ```
 
-Starta appen för att se att allt fungerar som det ska.
+Starta appen för att se att allt fungerar som det ska:
 
 ```
 $ npm start
 ```
 
-[http://localhost:1234/](http://localhost:1234/)
+Surfa in på [http://localhost:1234/](http://localhost:1234/)
 
 #### Step 2:
 
@@ -41,7 +48,7 @@ Ledtråd: I `tasks/task-list.js` skrivs bara en tom lista ut. Så ska det ju int
 
 #### Step 4:
 
-Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer som inget när man klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `tasks/new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `render`, `app.js`, `onSubmit`, och `tasks/new-task.js`).
+Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer inget när man klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `tasks/new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `app.js => render()` och `tasks/new-task.js => onSubmit()`).
 
 #### Step 5:
 
@@ -63,15 +70,15 @@ Du kan sedan säga om den ska vara ifylld eller inte genom att ge den följande 
 
 Sedan får du ett event varje gång användaren klickar i checkboxen genom att tilldela följande attribut: `onChange={event => console.log('Update task: ' + task + '. Complete: ' + event.target.checked)}`
 
-Och som av en slump så behöver funktionen `onCompleteChange` en todo och huruvida todo:n är klar eller inte.
+Och som av en slump så behöver funktionen `onCompleteChange` en todo och huruvida todo:n är klar eller inte. Med andra ord, se till att trigga `onCompleteChange` i `onChange`, och att du skickar med rätt argument.
 
 #### Step 7:
 
 Nu är det dags att knyta samman allt med ditt underbara todo-api 🚀
 
-I sann tv kocks anda har en api klient förberetts för dig.
+I sann tv kocks anda har en API klient förberetts för dig.
 
-Börja med att uppdatera `api/api-client.js` så att vi hämtar alla todos från api:t:
+Börja med att uppdatera `api/api-client.js` så att vi hämtar alla todos från API:t:
 
 ```diff
  getAllTasks() {
@@ -93,19 +100,39 @@ Börja med att uppdatera `api/api-client.js` så att vi hämtar alla todos från
 },
 ```
 
-Starta igång ditt [TalangApi](https://bitbucket.valtech.de/bb/projects/TALANG/repos/talang-api/browse) och kontrollera att din sida skriver ut todo-tasks från api:t.
+Starta igång ditt [TalangApi](https://bitbucket.valtech.de/bb/projects/TALANG/repos/talang-api/browse) och kontrollera att din sida skriver ut todo-tasks från API:t.
 
-Det finns stor risk att du får problem med CORS (Cross-Origin Resource Sharing). Problemet är att react-appen kör på en url och api:et på en annan. För att lösa det, gå till din node-applikation och installera följande paket:
+Det finns stor risk att du får problem med CORS ([Cross-Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)). Problemet är att react-appen kör på en url och API:et på en annan. För att lösa det, gå till din node-applikation.
+
+##### Koa:
+
 ```
 npm install @koa/cors --save
 ```
+
 Lägg sedan till detta i `index.js` :
+
 ```
 const cors = require('@koa/cors');
 ...
 app.use(cors());
 
 ```
+
+##### Express:
+
+```
+$ npm install cors
+```
+
+Lägg sedan till detta i `index.js` :
+
+```
+const cors = require('cors');
+app.use(cors());
+```
+
+##### Fortsättning (Koa och Express)
 
 Man kan lägga till flera app.use(...) så bara att lägga de under varandra.
 
@@ -120,20 +147,20 @@ Ledtråd:
 Låt oss börja med `onCreate`. `apiClient.createTask` förväntar sig en ny task och funktionen kommer sedan returnera ett Promises object och i svaret till detta Promises har vi det nya objektet som backend ger tillbaka om allt har gått bra. Ex.
 
 ```js
-const newTask = constructTask('My new task');
-apiClient.createTask(newTask).then(taskFromBackend => {
-  console.log(taskFromBackend);
+const newTask = constructTask("My new task")
+apiClient.createTask(newTask).then((taskFromBackend) => {
+  console.log(taskFromBackend)
   // Nu kan vi uppdatera vårat state
-});
+})
 ```
 
 När det kommer till `onCompleteChange` så gör vi nästan exakt samma sak men här man vi testa att använda `async/await`
 
 ```js
 onCompleteChange = async (taskToChange, isComplete) => {
-  await apiClient.updateTask({ ...taskToChange, isComplete });
+  await apiClient.updateTask({ ...taskToChange, isComplete })
   // Business as usual (uppdatera statet precis som innan)
-};
+}
 ```
 
 Kontrollera att dina tasks får korrekta id:n och dubbelkolla gärna med Postman eller Insomnia mot ditt api att det uppdateras korrekt.
@@ -146,7 +173,7 @@ Men, i den här applikationen har vi inte konsekvent använt den senaste coolast
 
 (Pssst: `useState` är en hook, så delar av applikationen använder hooks. Men inte `AppComponent`!)
 
-Börja med att göra om AppComponent (`app.js`) till att bli functionell, och använda `useState` och `useEffect`.
+Börja med att göra om AppComponent (`app.js`) till att bli funktionell, och använda `useState` och `useEffect`.
 
 ```diff
 -import React, { Fragment } from 'react';
@@ -178,16 +205,18 @@ Börja med att göra om AppComponent (`app.js`) till att bli functionell, och an
 +  }, []);
 ```
 
-Notera att `AppComponent` nu är en funktionel komponent, och inte en klass. Vi använder inte längre ett `state` objekt, utan två stycken state hooks istället. `tasks` motsvarar listan med tasks, och `setTasks` är en funktion som ändrar i tasks (gör det inte manuellt, använd alltid funktionen).
+Notera att `AppComponent` nu är en funktionell komponent, och inte en klass. Vi använder inte längre ett `state` objekt, utan två stycken state hooks istället. `tasks` motsvarar listan med tasks, och `setTasks` är en funktion som ändrar i tasks (gör det _aldrig_ manuellt, använd alltid funktionen).
 
-Istället för `componentDidMount` använder vi `useEffect`, vilket är en funktion som kommer köras varje gång något ändras på hemsidan, om inte annat specificerats. `useEffect` kan väljas att bara ta en funktion som input, och då körs det varje gång något ändras. Om man lägger till en lista med variabler, så kommer funktionen bara att köras när någon av dom variablerna ändras. Lämnar man listan tom, körs bara funktionen när componenten laddas.
+Istället för `componentDidMount` använder vi `useEffect`, vilket är en funktion som kommer köras varje gång något ändras på hemsidan, om inte annat specificerats. `useEffect` kan väljas att bara ta en funktion som input, och då körs det varje gång något ändras. Om man lägger till en lista med variabler, så kommer funktionen bara att köras när någon av dom variablerna ändras. Lämnar man listan tom, körs bara funktionen när componenten laddas (en enda gång m.a.o.).
 
 So many possibilites 😍. Däremot var det där inte allt som behöver ändras i `AppComponent` för att programmet ska fungera, fixa till så det funkar igen.
 
-Tips: `this` behövs inte längre, `state` är inte längre en variabel utan vi använder andra saker istället, och `render()` finns inte på en funktionel komponent.
+Tips: `this` behövs inte längre, `state` är inte längre en variabel utan vi använder andra saker istället, och `render()` finns inte på en funktionell komponent.
 
 #### Step 9:
+
 `useEffect` är ganska coolt. Vi borde hitta på något mer att göra med det. I `counter/counter.js` finns det en komponent för att visa hur många tasks man har klarat av. Den tar in en input, en lista av tasks (inte bästa design-beslutet, meeeeen). Lägg till `Counter` i din `Application` komponent:
+
 ```diff
 <NewTask onCreate={onCreate}/>
 +<Counter tasks={tasks} />
@@ -197,6 +226,9 @@ Tips: `this` behövs inte längre, `state` är inte längre en variabel utan vi 
 Great! Vi har nu en liten text, som säger att vi har klarat av lika många tasks som vi har, och den uppdateras inte när vi ändrar på något. Hm. Det var väl inte helt korrekt. Fixa den!
 
 #### Step 10:
+
 Seriöst? Har du hunnit hit på labbtiden?
 
 Ta tillfället i akt och andas ut och tänk efter. Var labben bra? Dåligt? Det kan vara värt att reflektera lite över vad du gjort i alla labbar, vad du tyckt varit snyggt, kul eller ganska dumt. Kolla gärna med dina kamrater hur dom löst de olika problemen, och diskutera era olika lösningsförslag. Passa även på att hjälpa någon som inte har kommit lika långt 😊 Eller ta en kaffe, vad vet jag. 🍦
+
+Alternativt, läs igenom den [officiella kom-igång guiden för React](https://reactjs.org/docs/hello-world.html) där många centrala koncept förklaras.
