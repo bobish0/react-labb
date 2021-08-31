@@ -32,13 +32,13 @@ Surfa in på [http://localhost:1234/](http://localhost:1234/)
 
 Du borde nu se ett inputfält och en knapp. Nice! 🙌
 
-Skriv något vackert i inputfältet. Märker du att något är fel? Det händer inget när du skriver? Varför? Om du öppnar dev-tools i din webbläsare så ser du dock att vi loggar det du skrivet. Så vad händer egentligen?
+Skriv något vackert i inputfältet. Märker du att något är fel? Det händer inget med inputfältet när du skriver? Varför? Om du öppnar dev-tools i din webbläsare så ser du dock att vi loggar det du skriver. Så vad händer egentligen?
 
 Öppna upp filen `tasks/new-task.js` och se om du kan fixa problemet.
 
 Ledtråd:
 
-Om du tittar på template:en för inputfältet så ser den ut så här: `<input value={task.name} onChange={onChange} />`. Dvs. värdet som ska vara i input fältet kommer från vår interna hook (`task.name`) och så fort vi skriver något i fältet kommer `onChange` att anropas med ett event och i eventet finns den text som användaren har skrivit in men vi uppdaterar inte vår hook. Utan vi låter det gamla värdet vara kvar. Så uppdatera värdet så kommer det nog gå bra 🕺
+Om du tittar på template:en för inputfältet så ser den ut så här: `<input value={taskName} onChange={onChange} />`. Dvs. värdet som ska vara i input fältet kommer från vår interna hook (`taskName`) och så fort vi skriver något i fältet kommer `onChange` att anropas med ett event och i eventet finns den text som användaren har skrivit in men vi uppdaterar inte vår hook. Utan vi låter det gamla värdet vara kvar. Så uppdatera värdet så kommer det nog gå bra 🕺
 
 #### Step 3:
 
@@ -48,17 +48,17 @@ Ledtråd: I `tasks/task-list.js` skrivs bara en tom lista ut. Så ska det ju int
 
 #### Step 4:
 
-Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer inget när man klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `tasks/new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `app.js => render()` och `tasks/new-task.js => onSubmit()`).
+Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer inget när du klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `tasks/new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `app.js`'s `render()`-metod samt `tasks/new-task.js`'s `onSubmit()`-metod).
 
 #### Step 5:
 
-Se även till att töm input fältet när man har skapat en todo.
+Se även till att tömma input fältet när du har skapat en todo.
 
 #### Step 6:
 
-Så där, nu kan man skapa nya todos och vi kan se alla i listan men vi kan inte markera dom som klara 😕
+Så där, nu kan du skapa nya todos och vi kan se alla i listan men vi kan inte markera dom som klara 😕
 
-Din uppgift blir nu att lägga till en checkbox i `tasks/task-list.js` som gör att man kan markera en todo som klar.
+Din uppgift blir nu att lägga till en checkbox i `tasks/task-list.js` som gör att du kan markera en todo som klar.
 
 Ledtråd: Du kan skapa upp en checkbox genom följande html kod:
 
@@ -134,7 +134,7 @@ app.use(cors());
 
 ##### Fortsättning (Koa och Express)
 
-Man kan lägga till flera app.use(...) så bara att lägga de under varandra.
+Det går att lägga till flera app.use(...) så bara att lägga de under varandra.
 
 Om du inte lyckas få till det, kan du lösa det genom att installera följande tillägg i webbläsaren: CORS Unblock. Denna approach funkar bra i lokal utveckling, men inte så bra i produktion. Dock kan vi skippa den konfigurationen och köra med tillägget för nu.
 
@@ -154,7 +154,7 @@ apiClient.createTask(newTask).then((taskFromBackend) => {
 })
 ```
 
-När det kommer till `onCompleteChange` så gör vi nästan exakt samma sak men här man vi testa att använda `async/await`
+När det kommer till `onCompleteChange` så gör vi nästan exakt samma sak men här kan vi testa att använda `async/await`
 
 ```js
 onCompleteChange = async (taskToChange, isComplete) => {
@@ -207,7 +207,7 @@ Börja med att göra om AppComponent (`app.js`) till att bli funktionell, och an
 
 Notera att `AppComponent` nu är en funktionell komponent, och inte en klass. Vi använder inte längre ett `state` objekt, utan två stycken state hooks istället. `tasks` motsvarar listan med tasks, och `setTasks` är en funktion som ändrar i tasks (gör det _aldrig_ manuellt, använd alltid funktionen).
 
-Istället för `componentDidMount` använder vi `useEffect`, vilket är en funktion som kommer köras varje gång något ändras på hemsidan, om inte annat specificerats. `useEffect` kan väljas att bara ta en funktion som input, och då körs det varje gång något ändras. Om man lägger till en lista med variabler, så kommer funktionen bara att köras när någon av dom variablerna ändras. Lämnar man listan tom, körs bara funktionen när componenten laddas (en enda gång m.a.o.).
+Istället för `componentDidMount` använder vi `useEffect`, vilket är en funktion som kommer köras varje gång något ändras på hemsidan, om inte annat specificerats. `useEffect` kan väljas att bara ta en funktion som input, och då körs det varje gång något ändras. Om du lägger till en lista med variabler, så kommer funktionen bara att köras när någon av dom variablerna ändras. Lämnar du listan tom, körs bara funktionen när componenten laddas (en enda gång m.a.o.).
 
 So many possibilites 😍. Däremot var det där inte allt som behöver ändras i `AppComponent` för att programmet ska fungera, fixa till så det funkar igen.
 
@@ -215,7 +215,7 @@ Tips: `this` behövs inte längre, `state` är inte längre en variabel utan vi 
 
 #### Step 9:
 
-`useEffect` är ganska coolt. Vi borde hitta på något mer att göra med det. I `counter/counter.js` finns det en komponent för att visa hur många tasks man har klarat av. Den tar in en input, en lista av tasks (inte bästa design-beslutet, meeeeen). Lägg till `Counter` i din `Application` komponent:
+`useEffect` är ganska coolt. Vi borde hitta på något mer att göra med det. I `counter/counter.js` finns det en komponent för att visa hur många tasks du har klarat av. Den tar in en input, en lista av tasks (inte bästa design-beslutet, meeeeen). Lägg till `Counter` i din `AppComponent` (i `app.js`):
 
 ```diff
 <NewTask onCreate={onCreate}/>
