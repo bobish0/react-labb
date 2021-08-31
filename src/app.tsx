@@ -4,7 +4,18 @@ import { NewTask } from './tasks/new-task';
 import { apiClient } from './api/api-client';
 import { constructTask } from './tasks/task';
 
-class AppComponent extends React.Component {
+export interface Task {
+  id: number
+  isComplete: boolean
+  name: string
+}
+
+interface AppComponentState {
+  loading: boolean
+  tasks: Task[]
+}
+
+class AppComponent extends React.Component<{}, AppComponentState> {
   state = {
     tasks: [],
     loading: true
@@ -16,7 +27,7 @@ class AppComponent extends React.Component {
       .then(tasks => this.setState({ tasks, loading: false }));
   }
 
-  onCompleteChange = async (taskToChange, isComplete) => {
+  onCompleteChange = async (taskToChange: Task, isComplete: boolean) => {
     const newTaskList = this.state.tasks.map(task => {
       if (task.id === taskToChange.id) {
         return constructTask(task.name, taskToChange.id, isComplete);
@@ -26,7 +37,7 @@ class AppComponent extends React.Component {
     this.setState({ ...this.state, tasks: newTaskList });
   };
 
-  onCreate = taskName => {
+  onCreate = (taskName: string) => {
     const newTask = constructTask(taskName);
     this.setState({
       tasks: [...this.state.tasks, newTask]

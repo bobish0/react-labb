@@ -34,7 +34,7 @@ Du borde nu se ett inputfält och en knapp. Nice! 🙌
 
 Skriv något vackert i inputfältet. Märker du att något är fel? Det händer inget med inputfältet när du skriver? Varför? Om du öppnar dev-tools i din webbläsare så ser du dock att vi loggar det du skriver. Så vad händer egentligen?
 
-Öppna upp filen `tasks/new-task.js` och se om du kan fixa problemet.
+Öppna upp filen `tasks/new-task.tsx` och se om du kan fixa problemet.
 
 Ledtråd:
 
@@ -44,11 +44,11 @@ Om du tittar på template:en för inputfältet så ser den ut så här: `<input 
 
 Det visas inga tasks på sidan 😢 Fixa problemet!
 
-Ledtråd: I `tasks/task-list.js` skrivs bara en tom lista ut. Så ska det ju inte vara. Se till att komponenten använder listan tasks som den får som props istället. Se även till att bara skriva ut namnet på elementet, istället för hela elementet.
+Ledtråd: I `tasks/task-list.tsx` skrivs bara en tom lista ut. Så ska det ju inte vara. Se till att komponenten använder listan tasks som den får som props istället. Se även till att bara skriva ut namnet på elementet, istället för hela elementet.
 
 #### Step 4:
 
-Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer inget när du klickar på "Save". Det finns dock en funktion i `app.js` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `tasks/new-task.js` (utan att ändra implementationen av `onCreate` i `app.js`, dock kommer du behöva ändra lite i `app.js`'s `render()`-metod samt `tasks/new-task.js`'s `onSubmit()`-metod).
+Nice, så vi kan nu se alla todo-tasks 🎉 Vi kan dock fortfarande inte skapa nya? Det händer inget när du klickar på "Save". Det finns dock en funktion i `app.tsx` som heter `onCreate` som skapar en ny todo. Kalla på funktionen i `tasks/new-task.tsx` (utan att ändra implementationen av `onCreate` i `app.tsx`, dock kommer du behöva ändra lite i `app.tsx`'s `render()`-metod samt `tasks/new-task.tsx`'s `onSubmit()`-metod).
 
 #### Step 5:
 
@@ -58,7 +58,7 @@ Se även till att tömma input fältet när du har skapat en todo.
 
 Så där, nu kan du skapa nya todos och vi kan se alla i listan men vi kan inte markera dom som klara 😕
 
-Din uppgift blir nu att lägga till en checkbox i `tasks/task-list.js` som gör att du kan markera en todo som klar.
+Din uppgift blir nu att lägga till en checkbox i `tasks/task-list.tsx` som gör att du kan markera en todo som klar.
 
 Ledtråd: Du kan skapa upp en checkbox genom följande html kod:
 
@@ -78,7 +78,7 @@ Nu är det dags att knyta samman allt med ditt underbara todo-api 🚀
 
 I sann tv kocks anda har en API klient förberetts för dig.
 
-Börja med att uppdatera `api/api-client.js` så att vi hämtar alla todos från API:t:
+Börja med att uppdatera `api/api-client.tsx` så att vi hämtar alla todos från API:t:
 
 ```diff
  getAllTasks() {
@@ -110,7 +110,7 @@ Det finns stor risk att du får problem med CORS ([Cross-Origin Resource Sharing
 npm install @koa/cors --save
 ```
 
-Lägg sedan till detta i `index.js` :
+Lägg sedan till detta i `index.tsx` :
 
 ```
 const cors = require('@koa/cors');
@@ -125,7 +125,7 @@ app.use(cors());
 $ npm install cors
 ```
 
-Lägg sedan till detta i `index.js` :
+Lägg sedan till detta i `index.tsx` :
 
 ```
 const cors = require('cors');
@@ -140,13 +140,13 @@ Om du inte lyckas få till det, kan du lösa det genom att installera följande 
 
 Eftersom det är backend som bestämmer id:t för objekten så behöver vi göra anropet till backend innan vi kan stoppa in den i vårat egna state.
 
-Uppdatera `app.js` så att vi anropar backend när vi skapar tasks.
+Uppdatera `app.tsx` så att vi anropar backend när vi skapar tasks.
 
 Ledtråd:
 
 Låt oss börja med `onCreate`. `apiClient.createTask` förväntar sig en ny task och funktionen kommer sedan returnera ett Promises object och i svaret till detta Promises har vi det nya objektet som backend ger tillbaka om allt har gått bra. Ex.
 
-```js
+```ts
 const newTask = constructTask("My new task")
 apiClient.createTask(newTask).then((taskFromBackend) => {
   console.log(taskFromBackend)
@@ -156,7 +156,7 @@ apiClient.createTask(newTask).then((taskFromBackend) => {
 
 När det kommer till `onCompleteChange` så gör vi nästan exakt samma sak men här kan vi testa att använda `async/await`
 
-```js
+```ts
 onCompleteChange = async (taskToChange, isComplete) => {
   await apiClient.updateTask({ ...taskToChange, isComplete })
   // Business as usual (uppdatera statet precis som innan)
@@ -173,7 +173,7 @@ Men, i den här applikationen har vi inte konsekvent använt den senaste coolast
 
 (Pssst: `useState` är en hook, så delar av applikationen använder hooks. Men inte `AppComponent`!)
 
-Börja med att göra om AppComponent (`app.js`) till att bli funktionell, och använda `useState` och `useEffect`.
+Börja med att göra om AppComponent (`app.tsx`) till att bli funktionell, och använda `useState` och `useEffect`.
 
 ```diff
 -import React, { Fragment } from 'react';
@@ -215,7 +215,7 @@ Tips: `this` behövs inte längre, `state` är inte längre en variabel utan vi 
 
 #### Step 9:
 
-`useEffect` är ganska coolt. Vi borde hitta på något mer att göra med det. I `counter/counter.js` finns det en komponent för att visa hur många tasks du har klarat av. Den tar in en input, en lista av tasks (inte bästa design-beslutet, meeeeen). Lägg till `Counter` i din `AppComponent` (i `app.js`):
+`useEffect` är ganska coolt. Vi borde hitta på något mer att göra med det. I `counter/counter.tsx` finns det en komponent för att visa hur många tasks du har klarat av. Den tar in en input, en lista av tasks (inte bästa design-beslutet, meeeeen). Lägg till `Counter` i din `AppComponent` (i `app.tsx`):
 
 ```diff
 <NewTask onCreate={onCreate}/>
