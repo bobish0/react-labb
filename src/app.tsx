@@ -37,7 +37,8 @@ class AppComponent extends React.Component<{}, AppComponentState> {
     this.setState({ ...this.state, tasks: newTaskList });
   };
 
-  onCreate = (taskName: string) => {
+  // HERE HERE HERE 
+   onCreate = (taskName: string) => {
     const newTask = constructTask(taskName);
     this.setState({
       tasks: [...this.state.tasks, newTask]
@@ -47,10 +48,12 @@ class AppComponent extends React.Component<{}, AppComponentState> {
   render() {
     if (this.state.loading) {
       return <h1>Loading...</h1>;
+
+      
     }
     return (
       <Fragment>
-        <NewTask />
+        <NewTask onCreate={this.onCreate}/>
         <TaskList
           tasks={this.state.tasks}
           onCompleteChange={this.onCompleteChange}
